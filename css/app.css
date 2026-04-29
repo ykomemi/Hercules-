@@ -246,7 +246,8 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 
 /* ===== HOME VIEW ===== */
 .home-header {
-  background: #000;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 100%),
+              url('../img/hercules-cover.jpg') center/cover no-repeat;
   padding: 24px 20px 28px;
   border-bottom: 2px solid var(--border);
 }
