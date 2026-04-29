@@ -1,0 +1,25 @@
+{
+  "name": "Hercules Fitness",
+  "short_name": "Hercules",
+  "description": "Your personal fitness trainer — built for young champions",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait-primary",
+  "categories": ["health", "fitness", "sports"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
