@@ -6,6 +6,7 @@ const App = (() => {
     plans: [],
     profile: {},
     history: [],
+    theme: 'light',
     // navigation context
     viewingPlanId: null,
     editingPlan: null,
@@ -15,11 +16,34 @@ const App = (() => {
     restTimerId: null,
   };
 
+  // ── Theme ──────────────────────────────────────────────────────────────────
+  function loadTheme() {
+    return localStorage.getItem('hercules-theme') || 'light';
+  }
+
+  function applyTheme(theme) {
+    state.theme = theme;
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
+  function toggleTheme() {
+    const next = state.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('hercules-theme', next);
+    applyTheme(next);
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.innerHTML = next === 'dark' ? iconSun() : iconMoon();
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
     state.plans   = loadPlans();
     state.profile = loadProfile();
     state.history = loadHistory();
+    applyTheme(loadTheme());
     registerSW();
     render();
     window.addEventListener('popstate', () => navigate('home'));
@@ -99,6 +123,9 @@ const App = (() => {
             <div class="home-logo">HERCULES</div>
             <div class="home-tagline">Young Champion Fitness</div>
           </div>
+          <button class="theme-toggle" id="theme-toggle-btn" onclick="App.toggleTheme()">
+            ${state.theme === 'dark' ? iconSun() : iconMoon()}
+          </button>
         </div>
         <div class="level-badge">
           <span class="level-num">LVL ${lvl.level}</span>
@@ -476,7 +503,7 @@ const App = (() => {
           <div class="rest-title">REST TIME</div>
           <div class="rest-ring">
             <svg viewBox="0 0 180 180" style="width:180px;height:180px">
-              <circle cx="90" cy="90" r="80" stroke="#222222" stroke-width="10" fill="none"/>
+              <circle id="rest-ring-bg" cx="90" cy="90" r="80" stroke-width="10" fill="none"/>
               <circle id="rest-ring-circle" cx="90" cy="90" r="80"
                 stroke="#C8FF00" stroke-width="10" fill="none"
                 stroke-dasharray="${2 * Math.PI * 80}"
@@ -952,6 +979,7 @@ const App = (() => {
     doneSet,
     skipRest,
     confirmExitWorkout,
+    toggleTheme,
   };
 })();
 
@@ -964,6 +992,12 @@ function iconPlans() {
 }
 function iconProfile() {
   return `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>`;
+}
+function iconSun() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+}
+function iconMoon() {
+  return `<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => App.init());

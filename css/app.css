@@ -1,27 +1,35 @@
 /* ===== VARIABLES ===== */
-:root {
+:root, [data-theme="light"] {
+  --bg: #FFFFFF;
+  --surface: #F4F4F4;
+  --surface2: #EBEBEB;
+  --surface3: #DDDDDD;
+  --primary: #8FB000;
+  --danger: #FF3333;
+  --text: #000000;
+  --text-muted: #888888;
+  --border: #E0E0E0;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-lg: 0px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.18);
+  --nav-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+[data-theme="dark"] {
   --bg: #000000;
   --surface: #111111;
   --surface2: #1A1A1A;
   --surface3: #222222;
   --primary: #C8FF00;
-  --primary-light: #C8FF00;
-  --primary-dark: #A3D400;
-  --accent: #C8FF00;
-  --accent-light: #DCFF66;
-  --success: #C8FF00;
   --danger: #FF3333;
-  --warning: #FFFFFF;
   --text: #FFFFFF;
   --text-muted: #666666;
   --border: #2A2A2A;
-  --radius: 0px;
-  --radius-sm: 0px;
-  --radius-lg: 0px;
   --shadow: 0 4px 20px rgba(0,0,0,0.8);
   --shadow-lg: 0 8px 40px rgba(0,0,0,0.9);
-  --nav-h: 64px;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ===== RESET ===== */
@@ -78,7 +86,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   max-width: 480px;
   height: calc(var(--nav-h) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
-  background: #000;
+  background: var(--bg);
   border-top: 2px solid var(--border);
   display: flex;
   align-items: flex-start;
@@ -328,7 +336,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 }
 
 .stat-chip {
-  background: #000;
+  background: var(--bg);
   padding: 16px 10px;
   text-align: center;
 }
@@ -556,8 +564,8 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   font-weight: 800;
   letter-spacing: 0.5px;
 }
-.day-dot.on { background: rgba(0,0,0,0.3); color: currentColor; }
-.day-dot.off { background: rgba(0,0,0,0.1); color: rgba(255,255,255,0.2); }
+.day-dot.on { background: rgba(128,128,128,0.25); color: currentColor; }
+.day-dot.off { background: rgba(128,128,128,0.10); color: var(--text-muted); opacity: 0.4; }
 
 .plan-card-arrow {
   position: absolute;
@@ -607,7 +615,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
   cursor: pointer;
   border: none;
   background: none;
@@ -973,7 +981,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 .rest-overlay {
   position: fixed;
   inset: 0;
-  background: #000;
+  background: var(--bg);
   z-index: 200;
   display: flex;
   flex-direction: column;
@@ -1043,7 +1051,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   align-items: center;
   padding: 48px 20px 40px;
   text-align: center;
-  background: #000;
+  background: var(--bg);
 }
 .complete-emoji { font-size: 64px; }
 .complete-title {
@@ -1158,7 +1166,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 
 /* ===== PROFILE VIEW ===== */
 .profile-hero {
-  background: #000;
+  background: var(--bg);
   padding: 36px 20px;
   text-align: center;
   border-bottom: 2px solid var(--border);
@@ -1198,7 +1206,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   background: var(--border);
 }
 .profile-stat {
-  background: #000;
+  background: var(--bg);
   border: none;
   padding: 20px 16px;
   display: flex;
@@ -1367,3 +1375,23 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   100% { transform: scale(1); }
 }
 .pop { animation: pop 0.25s; }
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.35);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.theme-toggle:active { background: rgba(255,255,255,0.28); }
+
+/* ===== REST RING SVG ===== */
+#rest-ring-bg { stroke: var(--surface3); }
+#rest-ring-circle { stroke: var(--primary); }
