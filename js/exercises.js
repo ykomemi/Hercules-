@@ -569,7 +569,7 @@ const EXERCISES = [
     defaultRest: 60,
     xpPerRep: 2,
     animKey: 'pushup',
-    video: 'videos/pushup.mp4'
+    video: 'videos/vid-pushups.mp4'
   },
   {
     id: 'squat',
