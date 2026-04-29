@@ -464,7 +464,10 @@ const App = (() => {
         <div class="workout-anim-area">
           <div class="anim-glow"></div>
           <div class="anim-container">
-            ${getAnimation(ex.animKey)}
+            ${ex.video
+              ? `<video id="ex-video" src="${ex.video}" autoplay loop muted playsinline></video>`
+              : getAnimation(ex.animKey)
+            }
           </div>
         </div>
 
@@ -648,7 +651,8 @@ const App = (() => {
   }
 
   function startWorkoutListeners() {
-    // Nothing extra needed — onclick handlers in template
+    const vid = document.getElementById('ex-video');
+    if (vid) { vid.load(); vid.play().catch(() => {}); }
   }
 
   function doneSet() {

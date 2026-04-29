@@ -568,7 +568,8 @@ const EXERCISES = [
     defaultReps: 10,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'pushup'
+    animKey: 'pushup',
+    video: 'videos/pushup.mp4'
   },
   {
     id: 'squat',
@@ -581,7 +582,8 @@ const EXERCISES = [
     defaultReps: 15,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'squat'
+    animKey: 'squat',
+    video: null
   },
   {
     id: 'lunge',
@@ -594,7 +596,8 @@ const EXERCISES = [
     defaultReps: 10,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'lunge'
+    animKey: 'lunge',
+    video: null
   },
   {
     id: 'plank',
@@ -608,7 +611,8 @@ const EXERCISES = [
     defaultRest: 60,
     xpPerRep: 3,
     isTimedReps: true,
-    animKey: 'plank'
+    animKey: 'plank',
+    video: null
   },
   {
     id: 'situp',
@@ -621,7 +625,8 @@ const EXERCISES = [
     defaultReps: 15,
     defaultRest: 45,
     xpPerRep: 2,
-    animKey: 'situp'
+    animKey: 'situp',
+    video: null
   },
   {
     id: 'wall_sit',
@@ -635,7 +640,8 @@ const EXERCISES = [
     defaultRest: 60,
     xpPerRep: 3,
     isTimedReps: true,
-    animKey: 'wall_sit'
+    animKey: 'wall_sit',
+    video: null
   },
   // CARDIO
   {
@@ -649,7 +655,8 @@ const EXERCISES = [
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'jumping_jack'
+    animKey: 'jumping_jack',
+    video: null
   },
   {
     id: 'high_knees',
@@ -662,7 +669,8 @@ const EXERCISES = [
     defaultReps: 30,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'high_knees'
+    animKey: 'high_knees',
+    video: null
   },
   {
     id: 'burpee',
@@ -675,7 +683,8 @@ const EXERCISES = [
     defaultReps: 8,
     defaultRest: 90,
     xpPerRep: 4,
-    animKey: 'burpee'
+    animKey: 'burpee',
+    video: null
   },
   {
     id: 'mountain_climber',
@@ -688,7 +697,8 @@ const EXERCISES = [
     defaultReps: 20,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'mountain_climber'
+    animKey: 'mountain_climber',
+    video: null
   },
   {
     id: 'jump_rope',
@@ -701,7 +711,8 @@ const EXERCISES = [
     defaultReps: 40,
     defaultRest: 60,
     xpPerRep: 1,
-    animKey: 'jump_rope'
+    animKey: 'jump_rope',
+    video: null
   },
   // BOXING
   {
@@ -715,7 +726,8 @@ const EXERCISES = [
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'jab'
+    animKey: 'jab',
+    video: null
   },
   {
     id: 'cross',
@@ -728,7 +740,8 @@ const EXERCISES = [
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'cross'
+    animKey: 'cross',
+    video: null
   },
   {
     id: 'hook',
@@ -741,7 +754,8 @@ const EXERCISES = [
     defaultReps: 16,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'hook'
+    animKey: 'hook',
+    video: null
   },
   {
     id: 'uppercut',
@@ -754,7 +768,8 @@ const EXERCISES = [
     defaultReps: 16,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'uppercut'
+    animKey: 'uppercut',
+    video: null
   },
   {
     id: 'shadow_boxing',
@@ -768,7 +783,8 @@ const EXERCISES = [
     defaultRest: 60,
     xpPerRep: 2,
     isTimedReps: true,
-    animKey: 'shadow_boxing'
+    animKey: 'shadow_boxing',
+    video: null
   }
 ];
 
