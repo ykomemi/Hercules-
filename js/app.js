@@ -8,6 +8,7 @@ const App = (() => {
     history: [],
     theme: 'light',
     videoReady: new Map(),
+    stagingExercise: null,
     // navigation context
     viewingPlanId: null,
     editingPlan: null,
@@ -428,6 +429,7 @@ const App = (() => {
     const cats = ['all', 'strength', 'cardio', 'boxing'];
     const filtered = state.exFilterCat === 'all' ? EXERCISES : EXERCISES.filter(e => e.category === state.exFilterCat);
     const alreadyIn = new Set((state.editingPlan?.exercises || []).map(e => e.exerciseId));
+    const staging = state.stagingExercise;
     return `
       <div class="page-header">
         <button class="detail-back" onclick="App.closeExerciseSelector()">‹ Back</button>
@@ -440,16 +442,62 @@ const App = (() => {
           </button>
         `).join('')}
       </div>
-      <div class="exercise-grid">
-        ${filtered.map(ex => `
-          <div class="ex-card cat-${ex.category} ${alreadyIn.has(ex.id)?'selected':''}"
-               onclick="App.addExerciseToPlan('${ex.id}')">
-            <div class="ex-icon">${ex.icon}</div>
-            <div class="ex-name">${esc(ex.name)}</div>
-            <div class="ex-cat">${ex.category}</div>
-            ${alreadyIn.has(ex.id) ? '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">✓ Added</div>' : ''}
+      <div class="exercise-grid"${staging ? ' style="padding-bottom:200px"' : ''}>
+        ${filtered.map(ex => {
+          const inPlan   = alreadyIn.has(ex.id);
+          const isStaged = staging?.exerciseId === ex.id;
+          return `
+            <div class="ex-card cat-${ex.category} ${inPlan || isStaged ? 'selected' : ''}"
+                 onclick="App.addExerciseToPlan('${ex.id}')">
+              <div class="ex-icon">${ex.icon}</div>
+              <div class="ex-name">${esc(ex.name)}</div>
+              <div class="ex-cat">${ex.category}</div>
+              ${inPlan   ? '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">✓ Added</div>' : ''}
+              ${isStaged ? '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">▾ Configuring</div>' : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+      ${staging ? stagingPanel(staging) : ''}
+    `;
+  }
+
+  function stagingPanel(staging) {
+    const ex = getExerciseById(staging.exerciseId);
+    if (!ex) return '';
+    return `
+      <div class="staging-panel">
+        <div class="staging-header">
+          <div class="staging-ex-name">${ex.icon} ${esc(ex.name)}</div>
+          <button class="staging-close" onclick="App.clearStaging()">✕</button>
+        </div>
+        <div class="editor-ex-settings">
+          <div class="editor-setting">
+            <label>SETS</label>
+            <div class="input-number">
+              <button onclick="App.adjStagingField('sets',-1)">−</button>
+              <span id="staging-sets">${staging.sets}</span>
+              <button onclick="App.adjStagingField('sets',1)">+</button>
+            </div>
           </div>
-        `).join('')}
+          <div class="editor-setting">
+            <label>${ex.isTimedReps ? 'SECS' : 'REPS'}</label>
+            <div class="input-number">
+              <button onclick="App.adjStagingField('reps',-${ex.isTimedReps ? 5 : 1})">−</button>
+              <span id="staging-reps">${staging.reps}</span>
+              <button onclick="App.adjStagingField('reps',${ex.isTimedReps ? 5 : 1})">+</button>
+            </div>
+          </div>
+          <div class="editor-setting">
+            <label>REST(s)</label>
+            <div class="input-number">
+              <button onclick="App.adjStagingField('rest',-15)">−</button>
+              <span id="staging-rest">${staging.rest}</span>
+              <button onclick="App.adjStagingField('rest',15)">+</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="App.confirmAddExercise()">ADD TO PLAN</button>
       </div>
     `;
   }
@@ -911,10 +959,12 @@ const App = (() => {
 
   function openExerciseSelector() {
     state.exFilterCat = 'all';
+    state.stagingExercise = null;
     navigate('exercise-selector');
   }
 
   function closeExerciseSelector() {
+    state.stagingExercise = null;
     navigate('plan-editor');
   }
 
@@ -927,18 +977,49 @@ const App = (() => {
     if (!state.editingPlan) return;
     const already = state.editingPlan.exercises.findIndex(e => e.exerciseId === exId);
     if (already >= 0) {
+      // Already confirmed in plan — tap again to remove
       state.editingPlan.exercises.splice(already, 1);
-    } else {
-      const ex = getExerciseById(exId);
-      if (!ex) return;
-      state.editingPlan.exercises.push({
-        exerciseId: exId,
-        sets: ex.defaultSets,
-        reps: ex.defaultReps,
-        rest: ex.defaultRest
-      });
+      state.stagingExercise = null;
+      navigate('exercise-selector');
+      return;
     }
+    if (state.stagingExercise?.exerciseId === exId) {
+      // Tap the already-staged card to deselect it
+      state.stagingExercise = null;
+      navigate('exercise-selector');
+      return;
+    }
+    // Stage for configuration
+    const ex = getExerciseById(exId);
+    if (!ex) return;
+    state.stagingExercise = { exerciseId: exId, sets: ex.defaultSets, reps: ex.defaultReps, rest: ex.defaultRest };
     navigate('exercise-selector');
+  }
+
+  function adjStagingField(field, delta) {
+    if (!state.stagingExercise) return;
+    const min = field === 'sets' ? 1 : field === 'rest' ? 15 : 1;
+    state.stagingExercise[field] = Math.max(min, state.stagingExercise[field] + delta);
+    const el = document.getElementById(`staging-${field}`);
+    if (el) { el.textContent = state.stagingExercise[field]; el.classList.add('pop'); setTimeout(() => el.classList.remove('pop'), 300); }
+  }
+
+  function clearStaging() {
+    state.stagingExercise = null;
+    navigate('exercise-selector');
+  }
+
+  function confirmAddExercise() {
+    if (!state.stagingExercise || !state.editingPlan) return;
+    state.editingPlan.exercises.push({ ...state.stagingExercise });
+    // Persist immediately so a page refresh keeps the exercise
+    const idx = state.plans.findIndex(p => p.id === state.editingPlan.id);
+    if (idx >= 0) {
+      state.plans[idx] = JSON.parse(JSON.stringify(state.editingPlan));
+      savePlans(state.plans);
+    }
+    state.stagingExercise = null;
+    navigate('plan-editor');
   }
 
   // ── GLOBAL EVENT LISTENERS ─────────────────────────────────────────────────
@@ -1009,6 +1090,9 @@ const App = (() => {
     closeExerciseSelector,
     setExFilter,
     addExerciseToPlan,
+    adjStagingField,
+    clearStaging,
+    confirmAddExercise,
     startWorkout,
     doneSet,
     skipRest,
