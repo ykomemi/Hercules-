@@ -61,8 +61,26 @@
       </div>
     </div>
 
+    <!-- Pre-exercise countdown overlay -->
+    <div id="countdown-overlay" style="display:none" aria-live="assertive">
+      <div class="countdown-ex-name" id="countdown-ex-name"></div>
+      <div class="countdown-ring">
+        <svg viewBox="0 0 180 180" style="width:180px;height:180px">
+          <circle cx="90" cy="90" r="80" stroke="#2a2a2a" stroke-width="10" fill="none"/>
+          <circle id="cd-ring-circle" cx="90" cy="90" r="80"
+            stroke="#C8FF00" stroke-width="10" fill="none"
+            stroke-dasharray="502.65"
+            stroke-dashoffset="0"
+            stroke-linecap="round"/>
+        </svg>
+        <div class="countdown-number" id="countdown-number">3</div>
+      </div>
+    </div>
+
     <!-- Toast container -->
     <div id="toast-container"></div>
+
+    <audio id="session-audio" src="audio/aud-default.MP3" preload="auto"></audio>
 
     <script src="js/exercises.js"></script>
     <script src="js/storage.js"></script>

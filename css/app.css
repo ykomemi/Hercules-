@@ -759,6 +759,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   padding: 0 16px;
 }
 .ex-card {
+  position: relative;
   background: var(--surface);
   border: 2px solid var(--border);
   padding: 18px 12px;
@@ -769,6 +770,26 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   flex-direction: column;
   align-items: center;
   gap: 6px;
+}
+.ex-card-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
+}
+.ex-coming-soon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #C8FF00;
+  background: #000000;
+  border: 1px solid #C8FF00;
+  padding: 2px 4px;
+  line-height: 1.4;
 }
 .ex-card:active { opacity: 0.8; }
 .ex-card.selected { border-color: var(--primary); background: var(--surface2); }
@@ -986,17 +1007,13 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 .rest-overlay {
   position: fixed;
   inset: 0;
-  background: var(--bg);
-  z-index: 200;
+  background: #000000;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  max-width: 480px;
-  margin: 0 auto;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .rest-title {
@@ -1041,11 +1058,57 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   text-align: center;
 }
 .rest-next strong {
-  color: var(--text);
+  color: #ffffff;
   display: block;
   font-size: 20px;
   letter-spacing: 2px;
   margin-top: 4px;
+}
+
+/* ===== COUNTDOWN OVERLAY ===== */
+#countdown-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.countdown-ex-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-align: center;
+  padding: 0 32px;
+  line-height: 1.1;
+}
+.countdown-ring {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+.countdown-ring svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.countdown-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 72px;
+  color: #C8FF00;
+  letter-spacing: 2px;
 }
 
 /* ===== WORKOUT COMPLETE ===== */

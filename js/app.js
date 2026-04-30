@@ -425,8 +425,9 @@ const App = (() => {
 
   // ── EXERCISE SELECTOR ──────────────────────────────────────────────────────
   function tmplExerciseSelector() {
-    const cats = ['all', 'strength', 'cardio', 'boxing'];
-    const filtered = state.exFilterCat === 'all' ? EXERCISES : EXERCISES.filter(e => e.category === state.exFilterCat);
+    const cats = ['all', 'strength', 'cardio'];
+    const filtered = (state.exFilterCat === 'all' ? EXERCISES : EXERCISES.filter(e => e.category === state.exFilterCat))
+      .filter(e => e.category !== 'boxing');
     const alreadyIn = new Set((state.editingPlan?.exercises || []).map(e => e.exerciseId));
     return `
       <div class="page-header">
@@ -441,15 +442,20 @@ const App = (() => {
         `).join('')}
       </div>
       <div class="exercise-grid">
-        ${filtered.map(ex => `
-          <div class="ex-card cat-${ex.category} ${alreadyIn.has(ex.id)?'selected':''}"
-               onclick="App.previewExercise('${ex.id}')">
-            <div class="ex-icon">${ex.icon}</div>
-            <div class="ex-name">${esc(ex.name)}</div>
-            <div class="ex-cat">${ex.category}</div>
-            ${alreadyIn.has(ex.id) ? '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">✓ Added</div>' : ''}
-          </div>
-        `).join('')}
+        ${filtered.map(ex => {
+          const disabled = !ex.video;
+          const selected = alreadyIn.has(ex.id);
+          return `
+            <div class="ex-card cat-${ex.category} ${selected?'selected':''} ${disabled?'ex-card-disabled':''}"
+                 ${disabled ? '' : `onclick="App.previewExercise('${ex.id}')"`}>
+              <div class="ex-icon">${ex.icon}</div>
+              <div class="ex-name">${esc(ex.name)}</div>
+              <div class="ex-cat">${ex.category}</div>
+              ${selected ? '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--primary)">✓ Added</div>' : ''}
+              ${disabled ? '<div class="ex-coming-soon">Coming Soon</div>' : ''}
+            </div>
+          `;
+        }).join('')}
       </div>
     `;
   }
@@ -671,7 +677,8 @@ const App = (() => {
       repsByExercise: {},
       startTime: Date.now()
     };
-    navigate('workout');
+    const firstEx = getExerciseById(state.workout.exercises[0].exerciseId);
+    startCountdown(firstEx?.name || '', true, () => navigate('workout'));
   }
 
   function startWorkoutListeners() {
@@ -709,21 +716,65 @@ const App = (() => {
     }
 
     if (moreSets) {
-      // Rest between sets, then same exercise
+      // Rest between sets, then countdown, then same exercise
       startRest(pe.rest, () => {
         w.currentSet += 1;
-        navigate('workout');
+        startCountdown(ex.name, false, () => navigate('workout'));
       });
     } else {
-      // Move to next exercise
+      // Move to next exercise — rest, then countdown
       const plan = state.plans.find(p => p.id === w.planId);
       const betweenRest = plan?.restBetweenExercises || 90;
       startRest(betweenRest, () => {
         w.currentIdx += 1;
         w.currentSet = 1;
-        navigate('workout');
+        const nextEx = getExerciseById(w.exercises[w.currentIdx].exerciseId);
+        startCountdown(nextEx?.name || '', true, () => navigate('workout'));
       });
     }
+  }
+
+  function startCountdown(exName, withAudio, onDone) {
+    const overlay = document.getElementById('countdown-overlay');
+    const nameEl  = document.getElementById('countdown-ex-name');
+    const numEl   = document.getElementById('countdown-number');
+    const ring    = document.getElementById('cd-ring-circle');
+    if (!overlay) { onDone(); return; }
+
+    const circumference = 2 * Math.PI * 80;
+    nameEl.textContent = exName;
+    numEl.textContent  = '3';
+    ring.style.strokeDashoffset = '0';
+    overlay.style.display = 'flex';
+
+    (state._countdownTimers || []).forEach(clearTimeout);
+    if (state._audioFadeInterval) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
+
+    if (withAudio) {
+      const audio = document.getElementById('session-audio');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.volume = 0;
+        audio.play().catch(() => {});
+        let vol = 0;
+        state._audioFadeInterval = setInterval(() => {
+          vol = Math.min(1, vol + 1 / 15);
+          audio.volume = vol;
+          if (vol >= 1) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
+        }, 100);
+      }
+    }
+
+    const t1 = setTimeout(() => { numEl.textContent = '2'; ring.style.strokeDashoffset = circumference / 3; }, 1000);
+    const t2 = setTimeout(() => { numEl.textContent = '1'; ring.style.strokeDashoffset = circumference * 2 / 3; }, 2000);
+    const t3 = setTimeout(() => { numEl.textContent = 'GO!'; ring.style.strokeDashoffset = '0'; }, 3000);
+    const t4 = setTimeout(() => {
+      overlay.style.display = 'none';
+      state._countdownTimers = [];
+      onDone();
+    }, 3700);
+
+    state._countdownTimers = [t1, t2, t3, t4];
   }
 
   function startRest(seconds, onDone) {
@@ -833,6 +884,13 @@ const App = (() => {
   function confirmExitWorkout() {
     showDialog('Exit Workout', 'Your progress will be lost.', () => {
       clearInterval(state.restTimerId);
+      (state._countdownTimers || []).forEach(clearTimeout);
+      state._countdownTimers = [];
+      if (state._audioFadeInterval) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
+      const audio = document.getElementById('session-audio');
+      if (audio) { audio.pause(); audio.currentTime = 0; audio.volume = 0; }
+      const cdOverlay = document.getElementById('countdown-overlay');
+      if (cdOverlay) cdOverlay.style.display = 'none';
       state.workout = null;
       navigate('home');
     });
