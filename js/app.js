@@ -7,6 +7,7 @@ const App = (() => {
     profile: {},
     history: [],
     theme: 'light',
+    videoReady: new Map(),
     // navigation context
     viewingPlanId: null,
     editingPlan: null,
@@ -38,6 +39,20 @@ const App = (() => {
     if (btn) btn.innerHTML = next === 'dark' ? iconSun() : iconMoon();
   }
 
+  // ── Video preloading ───────────────────────────────────────────────────────
+  function preloadVideos() {
+    EXERCISES.forEach(ex => {
+      if (!ex.video) return;
+      state.videoReady.set(ex.video, false);
+      const vid = document.createElement('video');
+      vid.muted = true;
+      vid.preload = 'auto';
+      vid.src = ex.video;
+      vid.addEventListener('canplaythrough', () => state.videoReady.set(ex.video, true), { once: true });
+      vid.load();
+    });
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
     state.plans   = loadPlans();
@@ -46,6 +61,14 @@ const App = (() => {
     applyTheme(loadTheme());
     registerSW();
     render();
+    preloadVideos();
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      setTimeout(() => {
+        preloader.classList.add('fade-out');
+        preloader.addEventListener('animationend', () => preloader.remove(), { once: true });
+      }, 1000);
+    }
     window.addEventListener('popstate', () => navigate('home'));
   }
 
@@ -465,7 +488,8 @@ const App = (() => {
           <div class="anim-glow"></div>
           <div class="anim-container">
             ${ex.video
-              ? `<video id="ex-video" src="${ex.video}" autoplay loop muted playsinline></video>`
+              ? `<video id="ex-video" src="${ex.video}" autoplay loop muted playsinline></video>
+                 ${!state.videoReady.get(ex.video) ? '<div class="video-spinner" id="video-spinner"></div>' : ''}`
               : getAnimation(ex.animKey)
             }
           </div>
@@ -652,7 +676,13 @@ const App = (() => {
 
   function startWorkoutListeners() {
     const vid = document.getElementById('ex-video');
-    if (vid) { vid.load(); vid.play().catch(() => {}); }
+    if (!vid) return;
+    vid.load();
+    vid.play().catch(() => {});
+    const spinner = document.getElementById('video-spinner');
+    if (spinner) {
+      vid.addEventListener('canplaythrough', () => spinner.remove(), { once: true });
+    }
   }
 
   function doneSet() {
