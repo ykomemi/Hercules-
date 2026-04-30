@@ -809,12 +809,33 @@ const App = (() => {
     navigate('workout-complete');
   }
 
+  function showDialog(title, message, onConfirm) {
+    const overlay = document.getElementById('app-dialog');
+    document.getElementById('dialog-title').textContent = title;
+    document.getElementById('dialog-message').textContent = message;
+    overlay.style.display = 'flex';
+
+    const confirmBtn = document.getElementById('dialog-confirm');
+    const cancelBtn = document.getElementById('dialog-cancel');
+
+    function close() {
+      overlay.style.display = 'none';
+      confirmBtn.removeEventListener('click', handleConfirm);
+      cancelBtn.removeEventListener('click', handleCancel);
+    }
+    function handleConfirm() { close(); onConfirm(); }
+    function handleCancel() { close(); }
+
+    confirmBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click', handleCancel);
+  }
+
   function confirmExitWorkout() {
-    if (confirm('Exit this workout? Progress will be lost.')) {
+    showDialog('Exit Workout', 'Your progress will be lost.', () => {
       clearInterval(state.restTimerId);
       state.workout = null;
       navigate('home');
-    }
+    });
   }
 
   // ── PLAN CRUD ──────────────────────────────────────────────────────────────
@@ -859,11 +880,12 @@ const App = (() => {
   }
 
   function deletePlan(id) {
-    if (!confirm('Delete this plan?')) return;
-    state.plans = state.plans.filter(p => p.id !== id);
-    savePlans(state.plans);
-    toast('Plan deleted');
-    navigate('plans');
+    showDialog('Delete Plan', 'This cannot be undone.', () => {
+      state.plans = state.plans.filter(p => p.id !== id);
+      savePlans(state.plans);
+      toast('Plan deleted');
+      navigate('plans');
+    });
   }
 
   function cancelEdit() {

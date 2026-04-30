@@ -584,7 +584,7 @@ const EXERCISES = [
     defaultRest: 60,
     xpPerRep: 2,
     animKey: "squat",
-    video: null,
+    video: "videos/vid-squats.mp4",
   },
   {
     id: "lunge",
@@ -627,7 +627,7 @@ const EXERCISES = [
     defaultRest: 45,
     xpPerRep: 2,
     animKey: "situp",
-    video: null,
+    video: "videos/vid-crunches.mp4",
   },
   {
     id: "wall_sit",
