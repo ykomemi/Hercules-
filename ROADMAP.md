@@ -1,6 +1,7 @@
 # ROADMAP.md — Hercules Feature Status
 
 ## Status key
+
 - ✅ Done
 - 🔧 In progress / needs fix
 - 📋 Planned
@@ -11,18 +12,20 @@
 ## Core app
 
 ### Plans
+
 - ✅ Create a plan (name, category, rest time, training days)
 - ✅ Edit a plan
 - ✅ Delete a plan
 - ✅ Default plan pre-loaded (Push-ups + Squats)
 - ✅ Training days picker (SU–SA)
 - ✅ Rest between exercises (stepper)
-- 🔧 Add exercise to plan — UI exists but missing confirm "ADD" button
+- ✅ Add exercise to plan — select → back to edit → save with SAVE PLAN button
 - ✅ Remove exercise from plan
 - ✅ Per-exercise sets / reps / rest steppers
 - ✅ Plans persisted in localStorage
 
 ### Session / Workout
+
 - ✅ Start session from plan
 - ✅ Step through exercises and sets
 - ✅ Rep counter display
@@ -36,11 +39,13 @@
 - 📋 Inline spinner if video not ready when session starts
 
 ### Exercise library
+
 - ✅ Exercise list displayed (strength / cardio / boxing)
 - 📋 Exercise detail view (description, muscles, tips)
 - 📋 More exercise videos from Kling
 
 ### Gamification
+
 - ✅ XP system
 - ✅ Level progression
 - ✅ Streak tracking
@@ -49,10 +54,12 @@
 - 📋 Personal records (best set, most reps in a session)
 
 ### Profile
+
 - 📋 Profile screen (name, avatar, stats summary)
 - 📋 Edit profile
 
 ### PWA
+
 - ✅ manifest.json
 - ✅ Service worker (sw.js)
 - ✅ Icons (192, 512, apple-touch-icon)
@@ -61,6 +68,7 @@
 - 📋 Test on iOS (Safari "Add to Home Screen")
 
 ### UX / Design
+
 - ✅ Light / dark theme toggle
 - ✅ Theme persisted in localStorage
 - 📋 App preloader (branded, 1 second)
@@ -69,6 +77,7 @@
 ---
 
 ## Backlog — maybe later
+
 - 💡 Sound effects (optional, toggleable)
 - 💡 Cloud sync (if more family members use it)
 - 💡 Share workout summary (screenshot-friendly completion card)

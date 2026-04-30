@@ -1443,45 +1443,6 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   to   { transform: translateY(0);   opacity: 1; }
 }
 
-/* ===== STAGING PANEL ===== */
-.staging-panel {
-  position: fixed;
-  bottom: calc(var(--nav-h) + var(--safe-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  background: var(--bg);
-  border-top: 2px solid var(--border);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  z-index: 50;
-}
-.staging-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.staging-ex-name {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.staging-close {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 4px 8px;
-  line-height: 1;
-}
-.staging-close:active { color: var(--danger); }
-
 /* ===== VIDEO SPINNER ===== */
 .video-spinner {
   position: absolute;
