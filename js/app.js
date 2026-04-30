@@ -39,6 +39,15 @@ const App = (() => {
     if (btn) btn.innerHTML = next === 'dark' ? iconSun() : iconMoon();
   }
 
+  function toggleMute() {
+    const audio = document.getElementById('session-audio');
+    if (!audio) return;
+    audio.muted = !audio.muted;
+    localStorage.setItem('hercules-muted', audio.muted);
+    const btn = document.getElementById('mute-btn');
+    if (btn) btn.innerHTML = audio.muted ? iconVolumeMute() : iconVolumeOn();
+  }
+
   // ── Video preloading ───────────────────────────────────────────────────────
   function preloadVideos() {
     EXERCISES.forEach(ex => {
@@ -59,6 +68,8 @@ const App = (() => {
     state.profile = loadProfile();
     state.history = loadHistory();
     applyTheme(loadTheme());
+    const audio = document.getElementById('session-audio');
+    if (audio) audio.muted = localStorage.getItem('hercules-muted') === 'true';
     registerSW();
     render();
     preloadVideos();
@@ -487,7 +498,10 @@ const App = (() => {
           <div class="workout-progress-bar">
             <div class="workout-progress-fill" style="width:${pct}%"></div>
           </div>
-          <div style="font-size:13px;font-weight:700;color:var(--text-muted)">${pct}%</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-size:13px;font-weight:700;color:var(--text-muted)">${pct}%</div>
+            <button class="workout-mute-btn" id="mute-btn" onclick="App.toggleMute()">${localStorage.getItem('hercules-muted')==='true' ? iconVolumeMute() : iconVolumeOn()}</button>
+          </div>
         </div>
 
         <div class="workout-anim-area">
@@ -722,7 +736,10 @@ const App = (() => {
         startCountdown(ex.name, false, () => navigate('workout'));
       });
     } else {
-      // Move to next exercise — rest, then countdown
+      // Exercise fully done — stop audio before rest, fade in on next exercise's countdown
+      const audio = document.getElementById('session-audio');
+      if (state._audioFadeInterval) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
+      if (audio) { audio.pause(); audio.currentTime = 0; audio.volume = 0; }
       const plan = state.plans.find(p => p.id === w.planId);
       const betweenRest = plan?.restBetweenExercises || 90;
       startRest(betweenRest, () => {
@@ -828,9 +845,16 @@ const App = (() => {
     if (state._restOnDone) { state._restOnDone(); state._restOnDone = null; }
   }
 
+  function stopSessionAudio() {
+    if (state._audioFadeInterval) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
+    const audio = document.getElementById('session-audio');
+    if (audio) { audio.pause(); audio.currentTime = 0; audio.volume = 0; }
+  }
+
   function completeWorkout() {
     const w = state.workout;
     clearInterval(state.restTimerId);
+    stopSessionAudio();
 
     const plan = state.plans.find(p => p.id === w.planId);
     const hasBoxing = w.exercises.some(pe => {
@@ -886,9 +910,7 @@ const App = (() => {
       clearInterval(state.restTimerId);
       (state._countdownTimers || []).forEach(clearTimeout);
       state._countdownTimers = [];
-      if (state._audioFadeInterval) { clearInterval(state._audioFadeInterval); state._audioFadeInterval = null; }
-      const audio = document.getElementById('session-audio');
-      if (audio) { audio.pause(); audio.currentTime = 0; audio.volume = 0; }
+      stopSessionAudio();
       const cdOverlay = document.getElementById('countdown-overlay');
       if (cdOverlay) cdOverlay.style.display = 'none';
       state.workout = null;
@@ -1142,6 +1164,7 @@ const App = (() => {
     skipRest,
     confirmExitWorkout,
     toggleTheme,
+    toggleMute,
   };
 })();
 
@@ -1160,6 +1183,12 @@ function iconSun() {
 }
 function iconMoon() {
   return `<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+}
+function iconVolumeOn() {
+  return `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+}
+function iconVolumeMute() {
+  return `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => App.init());
