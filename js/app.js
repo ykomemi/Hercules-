@@ -1,4 +1,4 @@
-/* ===== HERCULES FITNESS APP ===== */
+﻿/* ===== HERCULES FITNESS APP ===== */
 const App = (() => {
   // ── State ──────────────────────────────────────────────────────────────────
   let state = {
@@ -443,7 +443,7 @@ const App = (() => {
       <div class="exercise-grid">
         ${filtered.map(ex => `
           <div class="ex-card cat-${ex.category} ${alreadyIn.has(ex.id)?'selected':''}"
-               onclick="App.addExerciseToPlan('${ex.id}')">
+               onclick="App.previewExercise('${ex.id}')">
             <div class="ex-icon">${ex.icon}</div>
             <div class="ex-name">${esc(ex.name)}</div>
             <div class="ex-cat">${ex.category}</div>
@@ -963,6 +963,53 @@ const App = (() => {
     navigate('exercise-selector');
   }
 
+  function previewExercise(exId) {
+    if (!state.editingPlan) return;
+    const ex = getExerciseById(exId);
+    if (!ex) return;
+
+    const alreadyIn = state.editingPlan.exercises.findIndex(e => e.exerciseId === exId);
+    if (alreadyIn >= 0) {
+      state.editingPlan.exercises.splice(alreadyIn, 1);
+      navigate('exercise-selector');
+      return;
+    }
+
+    const overlay = document.getElementById('ex-preview-dialog');
+    const media = document.getElementById('ex-preview-media');
+    document.getElementById('ex-preview-name').textContent = ex.name;
+
+    if (ex.video) {
+      media.innerHTML = `<video src="${ex.video}" autoplay loop muted playsinline></video>`;
+    } else if (ex.animKey) {
+      media.innerHTML = getAnimation(ex.animKey);
+    } else {
+      media.innerHTML = `<div class="ex-preview-emoji">${ex.icon}</div>`;
+    }
+
+    overlay.style.display = 'flex';
+
+    const addBtn = document.getElementById('ex-preview-add');
+    const cancelBtn = document.getElementById('ex-preview-cancel');
+
+    function close() {
+      overlay.style.display = 'none';
+      const video = media.querySelector('video');
+      if (video) { video.pause(); video.src = ''; }
+      media.innerHTML = '';
+      addBtn.removeEventListener('click', handleAdd);
+      cancelBtn.removeEventListener('click', handleCancel);
+    }
+    function handleAdd() {
+      close();
+      addExerciseToPlan(exId);
+    }
+    function handleCancel() { close(); }
+
+    addBtn.addEventListener('click', handleAdd);
+    cancelBtn.addEventListener('click', handleCancel);
+  }
+
   // ── GLOBAL EVENT LISTENERS ─────────────────────────────────────────────────
   function attachGlobalListeners() {
     // Nothing extra — all handled via onclick in templates
@@ -1031,6 +1078,7 @@ const App = (() => {
     closeExerciseSelector,
     setExFilter,
     addExerciseToPlan,
+    previewExercise,
     startWorkout,
     doneSet,
     skipRest,
