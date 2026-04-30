@@ -67,7 +67,7 @@ const App = (() => {
       setTimeout(() => {
         preloader.classList.add('fade-out');
         preloader.addEventListener('animationend', () => preloader.remove(), { once: true });
-      }, 1000);
+      }, 1500);
     }
     window.addEventListener('popstate', () => navigate('home'));
   }

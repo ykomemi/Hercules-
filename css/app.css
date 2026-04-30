@@ -1408,8 +1408,18 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   background: #000;
   z-index: 9999;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 28px;
+}
+.preloader-logo {
+  width: 120px;
+  opacity: 0;
+  animation: preloader-logo-in 0.4s ease-out 0.55s forwards;
+}
+@keyframes preloader-logo-in {
+  to { opacity: 1; }
 }
 #preloader.fade-out {
   animation: preloader-out 0.35s ease-out forwards;

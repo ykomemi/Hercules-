@@ -1,6 +1,5 @@
 /* ===== EXERCISE ANIMATIONS (SMIL-based SVG) ===== */
 const ANIMS = {
-
   pushup: `<svg viewBox="0 0 240 185" fill="none" xmlns="http://www.w3.org/2000/svg">
     <line x1="10" y1="172" x2="230" y2="172" stroke="#222222" stroke-width="2"/>
     <!-- Hand contact points (fixed on floor) -->
@@ -551,255 +550,273 @@ const ANIMS = {
     <line class="ws" x1="68" y1="118" x2="62" y2="198" stroke-width="4"/>
     <line class="ws" x1="132" y1="118" x2="172" y2="118" stroke-width="4"/>
     <line class="ws" x1="172" y1="118" x2="178" y2="198" stroke-width="4"/>
-  </svg>`
+  </svg>`,
 };
 
 /* ===== EXERCISE LIBRARY ===== */
 const EXERCISES = [
   // STRENGTH
   {
-    id: 'pushup',
-    name: 'Push-Ups',
-    category: 'strength',
-    muscles: ['Chest', 'Triceps', 'Shoulders'],
-    description: 'Build a powerful chest! Keep your body straight like a plank.',
-    icon: '💪',
+    id: "pushup",
+    name: "Push-Ups",
+    category: "strength",
+    muscles: ["Chest", "Triceps", "Shoulders"],
+    description:
+      "Build a powerful chest! Keep your body straight like a plank.",
+    icon: "💪",
     defaultSets: 3,
     defaultReps: 10,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'pushup',
-    video: 'videos/vid-pushups.mp4'
+    animKey: "pushup",
+    video: "videos/vid-pushups.mp4",
   },
   {
-    id: 'squat',
-    name: 'Squats',
-    category: 'strength',
-    muscles: ['Quads', 'Glutes', 'Core'],
-    description: 'Builds powerful legs! Keep your chest up and knees behind toes.',
-    icon: '🦵',
+    id: "squat",
+    name: "Squats",
+    category: "strength",
+    muscles: ["Quads", "Glutes", "Core"],
+    description:
+      "Builds powerful legs! Keep your chest up and knees behind toes.",
+    icon: "🦵",
     defaultSets: 3,
     defaultReps: 15,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'squat',
-    video: null
+    animKey: "squat",
+    video: null,
   },
   {
-    id: 'lunge',
-    name: 'Lunges',
-    category: 'strength',
-    muscles: ['Quads', 'Glutes', 'Balance'],
-    description: 'Single-leg strength and balance. Step forward, knee to 90°.',
-    icon: '🚶',
+    id: "lunge",
+    name: "Lunges",
+    category: "strength",
+    muscles: ["Quads", "Glutes", "Balance"],
+    description: "Single-leg strength and balance. Step forward, knee to 90°.",
+    icon: "🚶",
     defaultSets: 3,
     defaultReps: 10,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'lunge',
-    video: null
+    animKey: "lunge",
+    video: null,
   },
   {
-    id: 'plank',
-    name: 'Plank Hold',
-    category: 'strength',
-    muscles: ['Core', 'Shoulders', 'Back'],
-    description: 'Core of steel! Hold your body rigid like an iron bridge.',
-    icon: '🧱',
+    id: "plank",
+    name: "Plank Hold",
+    category: "strength",
+    muscles: ["Core", "Shoulders", "Back"],
+    description: "Core of steel! Hold your body rigid like an iron bridge.",
+    icon: "🧱",
     defaultSets: 3,
     defaultReps: 30,
     defaultRest: 60,
     xpPerRep: 3,
     isTimedReps: true,
-    animKey: 'plank',
-    video: null
+    animKey: "plank",
+    video: null,
   },
   {
-    id: 'situp',
-    name: 'Sit-Ups',
-    category: 'strength',
-    muscles: ['Abs', 'Core', 'Hip Flexors'],
-    description: 'Classic ab builder. Hands behind head, curl up slowly.',
-    icon: '🔥',
+    id: "situp",
+    name: "Crunches",
+    category: "strength",
+    muscles: ["Abs", "Core", "Hip Flexors"],
+    description: "Classic ab builder. Hands behind head, curl up slowly.",
+    icon: "🔥",
     defaultSets: 3,
     defaultReps: 15,
     defaultRest: 45,
     xpPerRep: 2,
-    animKey: 'situp',
-    video: null
+    animKey: "situp",
+    video: null,
   },
   {
-    id: 'wall_sit',
-    name: 'Wall Sit',
-    category: 'strength',
-    muscles: ['Quads', 'Glutes', 'Calves'],
-    description: 'Invisible chair challenge! Back against wall, thighs parallel.',
-    icon: '⏱️',
+    id: "wall_sit",
+    name: "Wall Sit",
+    category: "strength",
+    muscles: ["Quads", "Glutes", "Calves"],
+    description:
+      "Invisible chair challenge! Back against wall, thighs parallel.",
+    icon: "⏱️",
     defaultSets: 3,
     defaultReps: 30,
     defaultRest: 60,
     xpPerRep: 3,
     isTimedReps: true,
-    animKey: 'wall_sit',
-    video: null
+    animKey: "wall_sit",
+    video: null,
   },
   // CARDIO
   {
-    id: 'jumping_jack',
-    name: 'Jumping Jacks',
-    category: 'cardio',
-    muscles: ['Full Body', 'Cardio'],
-    description: 'Classic warm-up! Arms up and legs wide at the same time.',
-    icon: '⭐',
+    id: "jumping_jack",
+    name: "Jumping Jacks",
+    category: "cardio",
+    muscles: ["Full Body", "Cardio"],
+    description: "Classic warm-up! Arms up and legs wide at the same time.",
+    icon: "⭐",
     defaultSets: 3,
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'jumping_jack',
-    video: null
+    animKey: "jumping_jack",
+    video: null,
   },
   {
-    id: 'high_knees',
-    name: 'High Knees',
-    category: 'cardio',
-    muscles: ['Cardio', 'Core', 'Legs'],
-    description: 'Run in place, drive your knees as high as you can!',
-    icon: '🏃',
+    id: "high_knees",
+    name: "High Knees",
+    category: "cardio",
+    muscles: ["Cardio", "Core", "Legs"],
+    description: "Run in place, drive your knees as high as you can!",
+    icon: "🏃",
     defaultSets: 3,
     defaultReps: 30,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'high_knees',
-    video: null
+    animKey: "high_knees",
+    video: null,
   },
   {
-    id: 'burpee',
-    name: 'Burpees',
-    category: 'cardio',
-    muscles: ['Full Body', 'Cardio', 'Core'],
-    description: 'The ultimate full-body move! Jump, plank, push-up, jump up!',
-    icon: '💥',
+    id: "burpee",
+    name: "Burpees",
+    category: "cardio",
+    muscles: ["Full Body", "Cardio", "Core"],
+    description: "The ultimate full-body move! Jump, plank, push-up, jump up!",
+    icon: "💥",
     defaultSets: 3,
     defaultReps: 8,
     defaultRest: 90,
     xpPerRep: 4,
-    animKey: 'burpee',
-    video: null
+    animKey: "burpee",
+    video: null,
   },
   {
-    id: 'mountain_climber',
-    name: 'Mountain Climbers',
-    category: 'cardio',
-    muscles: ['Core', 'Cardio', 'Shoulders'],
-    description: 'Plank position, drive your knees toward your chest alternately.',
-    icon: '🏔️',
+    id: "mountain_climber",
+    name: "Mountain Climbers",
+    category: "cardio",
+    muscles: ["Core", "Cardio", "Shoulders"],
+    description:
+      "Plank position, drive your knees toward your chest alternately.",
+    icon: "🏔️",
     defaultSets: 3,
     defaultReps: 20,
     defaultRest: 60,
     xpPerRep: 2,
-    animKey: 'mountain_climber',
-    video: null
+    animKey: "mountain_climber",
+    video: null,
   },
   {
-    id: 'jump_rope',
-    name: 'Jump Rope',
-    category: 'cardio',
-    muscles: ['Calves', 'Cardio', 'Coordination'],
-    description: 'Jump rope or shadow rope — great cardio and footwork!',
-    icon: '🪢',
+    id: "jump_rope",
+    name: "Jump Rope",
+    category: "cardio",
+    muscles: ["Calves", "Cardio", "Coordination"],
+    description: "Jump rope or shadow rope — great cardio and footwork!",
+    icon: "🪢",
     defaultSets: 3,
     defaultReps: 40,
     defaultRest: 60,
     xpPerRep: 1,
-    animKey: 'jump_rope',
-    video: null
+    animKey: "jump_rope",
+    video: null,
   },
   // BOXING
   {
-    id: 'jab',
-    name: 'Jab',
-    category: 'boxing',
-    muscles: ['Shoulders', 'Core', 'Arms'],
-    description: 'Quick straight punch with your lead hand. Stay light on your feet!',
-    icon: '🥊',
+    id: "jab",
+    name: "Jab",
+    category: "boxing",
+    muscles: ["Shoulders", "Core", "Arms"],
+    description:
+      "Quick straight punch with your lead hand. Stay light on your feet!",
+    icon: "🥊",
     defaultSets: 3,
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'jab',
-    video: null
+    animKey: "jab",
+    video: null,
   },
   {
-    id: 'cross',
-    name: 'Cross',
-    category: 'boxing',
-    muscles: ['Shoulders', 'Core', 'Back'],
-    description: 'Power punch with your rear hand! Rotate your hip and shoulder.',
-    icon: '🥊',
+    id: "cross",
+    name: "Cross",
+    category: "boxing",
+    muscles: ["Shoulders", "Core", "Back"],
+    description:
+      "Power punch with your rear hand! Rotate your hip and shoulder.",
+    icon: "🥊",
     defaultSets: 3,
     defaultReps: 20,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'cross',
-    video: null
+    animKey: "cross",
+    video: null,
   },
   {
-    id: 'hook',
-    name: 'Hook',
-    category: 'boxing',
-    muscles: ['Core', 'Shoulders', 'Arms'],
-    description: 'Horizontal punch that swings from the side. Rotate your whole body!',
-    icon: '🥊',
+    id: "hook",
+    name: "Hook",
+    category: "boxing",
+    muscles: ["Core", "Shoulders", "Arms"],
+    description:
+      "Horizontal punch that swings from the side. Rotate your whole body!",
+    icon: "🥊",
     defaultSets: 3,
     defaultReps: 16,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'hook',
-    video: null
+    animKey: "hook",
+    video: null,
   },
   {
-    id: 'uppercut',
-    name: 'Uppercut',
-    category: 'boxing',
-    muscles: ['Core', 'Legs', 'Shoulders'],
-    description: 'Upward punch that rises from low. Dip and drive from your legs!',
-    icon: '🥊',
+    id: "uppercut",
+    name: "Uppercut",
+    category: "boxing",
+    muscles: ["Core", "Legs", "Shoulders"],
+    description:
+      "Upward punch that rises from low. Dip and drive from your legs!",
+    icon: "🥊",
     defaultSets: 3,
     defaultReps: 16,
     defaultRest: 45,
     xpPerRep: 1,
-    animKey: 'uppercut',
-    video: null
+    animKey: "uppercut",
+    video: null,
   },
   {
-    id: 'shadow_boxing',
-    name: 'Shadow Boxing',
-    category: 'boxing',
-    muscles: ['Full Body', 'Cardio', 'Coordination'],
-    description: 'Throw jab-cross-hook combos! Move your feet and stay active.',
-    icon: '👊',
+    id: "shadow_boxing",
+    name: "Shadow Boxing",
+    category: "boxing",
+    muscles: ["Full Body", "Cardio", "Coordination"],
+    description: "Throw jab-cross-hook combos! Move your feet and stay active.",
+    icon: "👊",
     defaultSets: 3,
     defaultReps: 30,
     defaultRest: 60,
     xpPerRep: 2,
     isTimedReps: true,
-    animKey: 'shadow_boxing',
-    video: null
-  }
+    animKey: "shadow_boxing",
+    video: null,
+  },
 ];
 
 function getExerciseById(id) {
-  return EXERCISES.find(e => e.id === id);
+  return EXERCISES.find((e) => e.id === id);
 }
 
 function getAnimation(key) {
-  return ANIMS[key] || ANIMS['plank'];
+  return ANIMS[key] || ANIMS["plank"];
 }
 
 function getCategoryGradient(category) {
-  return { strength: 'grad-strength', cardio: 'grad-cardio', boxing: 'grad-boxing' }[category] || 'grad-default';
+  return (
+    { strength: "grad-strength", cardio: "grad-cardio", boxing: "grad-boxing" }[
+      category
+    ] || "grad-default"
+  );
 }
 
 function getCategoryColor(category) {
-  return { strength: 'cat-color-strength', cardio: 'cat-color-cardio', boxing: 'cat-color-boxing' }[category] || '';
+  return (
+    {
+      strength: "cat-color-strength",
+      cardio: "cat-color-cardio",
+      boxing: "cat-color-boxing",
+    }[category] || ""
+  );
 }
