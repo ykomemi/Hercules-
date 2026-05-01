@@ -17,6 +17,10 @@ const App = (() => {
     restTimerId: null,
   };
 
+  const SESSION_KEY = 'hercules-session-active';
+  const SCREEN_KEY  = 'hercules-last-screen';
+  const NAV_SCREENS = ['home', 'plans', 'profile'];
+
   // ── Theme ──────────────────────────────────────────────────────────────────
   function loadTheme() {
     return localStorage.getItem('hercules-theme') || 'light';
@@ -48,6 +52,78 @@ const App = (() => {
     if (btn) btn.innerHTML = audio.muted ? iconVolumeMute() : iconVolumeOn();
   }
 
+  // ── Session persistence ────────────────────────────────────────────────────
+  function saveSessionState() {
+    if (!state.workout) return;
+    const w = state.workout;
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        planId: w.planId,
+        currentIdx: w.currentIdx,
+        currentSet: w.currentSet,
+        xpEarned: w.xpEarned,
+        totalReps: w.totalReps,
+        totalSets: w.totalSets,
+        repsByExercise: w.repsByExercise,
+        startTime: w.startTime,
+        timestamp: Date.now(),
+      }));
+    } catch (_) {}
+  }
+
+  function clearSessionState() {
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  function loadSessionState() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      if (!data.timestamp || Date.now() - data.timestamp > 2 * 60 * 60 * 1000) {
+        clearSessionState();
+        return null;
+      }
+      return data;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function showRecoveryDialog(session) {
+    const overlay = document.getElementById('recovery-dialog');
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+    document.getElementById('recovery-resume').onclick = () => {
+      overlay.style.display = 'none';
+      resumeSession(session);
+    };
+    document.getElementById('recovery-fresh').onclick = () => {
+      overlay.style.display = 'none';
+      clearSessionState();
+      navigate('home');
+    };
+  }
+
+  function resumeSession(session) {
+    const plan = state.plans.find(p => p.id === session.planId);
+    if (!plan || !plan.exercises.length) { clearSessionState(); navigate('home'); return; }
+    const currentIdx = Math.min(session.currentIdx || 0, plan.exercises.length - 1);
+    const currentSet = Math.min(session.currentSet || 1, plan.exercises[currentIdx]?.sets || 1);
+    state.workout = {
+      planId: session.planId,
+      exercises: plan.exercises.map(pe => ({ ...pe })),
+      currentIdx,
+      currentSet,
+      xpEarned: session.xpEarned || 0,
+      totalReps: session.totalReps || 0,
+      totalSets: session.totalSets || 0,
+      repsByExercise: session.repsByExercise || {},
+      startTime: session.startTime || Date.now(),
+    };
+    navigate('workout');
+  }
+
   // ── Video preloading ───────────────────────────────────────────────────────
   function preloadVideos() {
     EXERCISES.forEach(ex => {
@@ -71,13 +147,23 @@ const App = (() => {
     const audio = document.getElementById('session-audio');
     if (audio) audio.muted = localStorage.getItem('hercules-muted') === 'true';
     registerSW();
+
+    const savedSession = loadSessionState();
+    if (!savedSession) {
+      const last = localStorage.getItem(SCREEN_KEY);
+      if (last && NAV_SCREENS.includes(last)) state.view = last;
+    }
+
     render();
     preloadVideos();
     const preloader = document.getElementById('preloader');
     if (preloader) {
       setTimeout(() => {
         preloader.classList.add('fade-out');
-        preloader.addEventListener('animationend', () => preloader.remove(), { once: true });
+        preloader.addEventListener('animationend', () => {
+          preloader.remove();
+          if (savedSession) showRecoveryDialog(savedSession);
+        }, { once: true });
       }, 1500);
     }
     window.addEventListener('popstate', () => navigate('home'));
@@ -94,6 +180,9 @@ const App = (() => {
     Object.assign(state, data);
     state.view = view;
     render();
+    if (NAV_SCREENS.includes(view)) {
+      try { localStorage.setItem(SCREEN_KEY, view); } catch (_) {}
+    }
     const el = document.getElementById('view');
     if (el) { el.classList.remove('view-enter'); void el.offsetWidth; el.classList.add('view-enter'); }
     window.scrollTo(0, 0);
@@ -114,7 +203,7 @@ const App = (() => {
         case 'plan-detail':      view.innerHTML = tmplPlanDetail(); break;
         case 'plan-editor':      view.innerHTML = tmplPlanEditor(); break;
         case 'exercise-selector':view.innerHTML = tmplExerciseSelector(); break;
-        case 'workout':          view.innerHTML = tmplWorkout(); startWorkoutListeners(); break;
+        case 'workout':          view.innerHTML = tmplWorkout(); startWorkoutListeners(); saveSessionState(); break;
         case 'workout-complete': view.innerHTML = tmplWorkoutComplete(); break;
         case 'profile':          view.innerHTML = tmplProfile(); break;
       }
@@ -855,6 +944,7 @@ const App = (() => {
     const w = state.workout;
     clearInterval(state.restTimerId);
     stopSessionAudio();
+    clearSessionState();
 
     const plan = state.plans.find(p => p.id === w.planId);
     const hasBoxing = w.exercises.some(pe => {
@@ -911,6 +1001,7 @@ const App = (() => {
       (state._countdownTimers || []).forEach(clearTimeout);
       state._countdownTimers = [];
       stopSessionAudio();
+      clearSessionState();
       const cdOverlay = document.getElementById('countdown-overlay');
       if (cdOverlay) cdOverlay.style.display = 'none';
       state.workout = null;
