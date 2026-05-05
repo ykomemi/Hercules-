@@ -613,7 +613,7 @@ const EXERCISES = [
     xpPerRep: 3,
     isTimedReps: true,
     animKey: "plank",
-    video: null,
+    video: "videos/vid-elbow-plank.mp4",
   },
   {
     id: "situp",
