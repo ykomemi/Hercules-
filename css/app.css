@@ -809,9 +809,10 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-.cat-strength .ex-cat { background: var(--primary); color: #000; }
+.cat-bodyweight .ex-cat { background: var(--primary); color: #000; }
 .cat-cardio .ex-cat { background: #FFFFFF; color: #000; }
 .cat-boxing .ex-cat { background: var(--danger); color: #FFF; }
+.cat-gym .ex-cat { background: #4A9EFF; color: #000; }
 
 /* ===== FILTER TABS ===== */
 .filter-tabs {
@@ -938,6 +939,15 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
   text-transform: uppercase;
   color: var(--text);
   line-height: 1.1;
+}
+.workout-weight {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #4A9EFF;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 .workout-muscles {
   font-family: 'Barlow Condensed', sans-serif;
@@ -1424,6 +1434,7 @@ h1, h2, h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; }
 .cat-color-strength { background: var(--primary); }
 .cat-color-cardio   { background: #FFFFFF; }
 .cat-color-boxing   { background: var(--danger); }
+.cat-color-gym      { background: #4A9EFF; }
 
 /* ===== UTILITY ===== */
 .flex { display: flex; }

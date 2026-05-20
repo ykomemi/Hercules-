@@ -555,11 +555,11 @@ const ANIMS = {
 
 /* ===== EXERCISE LIBRARY ===== */
 const EXERCISES = [
-  // STRENGTH
+  // BODYWEIGHT
   {
     id: "pushup",
     name: "Push-Ups",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Chest", "Triceps", "Shoulders"],
     description:
       "Build a powerful chest! Keep your body straight like a plank.",
@@ -574,7 +574,7 @@ const EXERCISES = [
   {
     id: "squat",
     name: "Squats",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Quads", "Glutes", "Core"],
     description:
       "Builds powerful legs! Keep your chest up and knees behind toes.",
@@ -589,7 +589,7 @@ const EXERCISES = [
   {
     id: "lunge",
     name: "Lunges",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Quads", "Glutes", "Balance"],
     description: "Single-leg strength and balance. Step forward, knee to 90°.",
     icon: "🚶",
@@ -603,7 +603,7 @@ const EXERCISES = [
   {
     id: "plank",
     name: "Plank Hold",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Core", "Shoulders", "Back"],
     description: "Core of steel! Hold your body rigid like an iron bridge.",
     icon: "🧱",
@@ -618,7 +618,7 @@ const EXERCISES = [
   {
     id: "situp",
     name: "Crunches",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Abs", "Core", "Hip Flexors"],
     description: "Classic ab builder. Hands behind head, curl up slowly.",
     icon: "🔥",
@@ -632,7 +632,7 @@ const EXERCISES = [
   {
     id: "wall_sit",
     name: "Wall Sit",
-    category: "strength",
+    category: "bodyweight",
     muscles: ["Quads", "Glutes", "Calves"],
     description:
       "Invisible chair challenge! Back against wall, thighs parallel.",
@@ -793,6 +793,21 @@ const EXERCISES = [
     animKey: "shadow_boxing",
     video: null,
   },
+  // GYM
+  {
+    id: "incline-dumbbell-press",
+    name: "Incline Dumbbell Press",
+    category: "gym",
+    muscles: ["Chest", "Shoulders", "Triceps"],
+    description: "Upper chest builder. Set bench to 30–45°, press dumbbells up and in.",
+    icon: "🏋️",
+    defaultSets: 3,
+    defaultReps: 10,
+    defaultRest: 90,
+    xpPerRep: 3,
+    animKey: null,
+    video: "videos/vid-incline-dumbbell-press.mp4",
+  },
 ];
 
 function getExerciseById(id) {
@@ -805,7 +820,7 @@ function getAnimation(key) {
 
 function getCategoryGradient(category) {
   return (
-    { strength: "grad-strength", cardio: "grad-cardio", boxing: "grad-boxing" }[
+    { bodyweight: "grad-strength", cardio: "grad-cardio", boxing: "grad-boxing", gym: "grad-default" }[
       category
     ] || "grad-default"
   );
@@ -814,9 +829,10 @@ function getCategoryGradient(category) {
 function getCategoryColor(category) {
   return (
     {
-      strength: "cat-color-strength",
+      bodyweight: "cat-color-strength",
       cardio: "cat-color-cardio",
       boxing: "cat-color-boxing",
+      gym: "cat-color-gym",
     }[category] || ""
   );
 }

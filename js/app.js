@@ -407,7 +407,7 @@ const App = (() => {
                 <div class="exercise-color-bar ${getCategoryColor(ex.category)}"></div>
                 <div class="exercise-item-body">
                   <div class="exercise-item-name">${ex.icon} ${esc(ex.name)}</div>
-                  <div class="exercise-item-meta">${pe.sets} sets × ${pe.reps} ${ex.isTimedReps ? 'sec' : 'reps'} · ${pe.rest}s rest</div>
+                  <div class="exercise-item-meta">${pe.sets} sets × ${pe.reps} ${ex.isTimedReps ? 'sec' : 'reps'} · ${pe.rest}s rest${ex.category === 'gym' ? ` · ${pe.weight ?? 10}kg` : ''}</div>
                   <div class="exercise-item-tags">
                     ${ex.muscles.map(m => `<span class="tag">${m}</span>`).join('')}
                   </div>
@@ -518,6 +518,15 @@ const App = (() => {
               <button onclick="App.adjExField(${i},'rest',15)">+</button>
             </div>
           </div>
+          ${ex.category === 'gym' ? `
+          <div class="editor-setting">
+            <label>KG</label>
+            <div class="input-number">
+              <button onclick="App.adjExField(${i},'weight',-2.5)">−</button>
+              <span id="ex-weight-${i}">${pe.weight ?? 10}</span>
+              <button onclick="App.adjExField(${i},'weight',2.5)">+</button>
+            </div>
+          </div>` : ''}
         </div>
       </div>
     `;
@@ -525,7 +534,7 @@ const App = (() => {
 
   // ── EXERCISE SELECTOR ──────────────────────────────────────────────────────
   function tmplExerciseSelector() {
-    const cats = ['all', 'strength', 'cardio'];
+    const cats = ['all', 'bodyweight', 'cardio', 'gym'];
     const filtered = (state.exFilterCat === 'all' ? EXERCISES : EXERCISES.filter(e => e.category === state.exFilterCat))
       .filter(e => e.category !== 'boxing');
     const alreadyIn = new Set((state.editingPlan?.exercises || []).map(e => e.exerciseId));
@@ -606,6 +615,7 @@ const App = (() => {
 
         <div class="workout-info">
           <div class="workout-ex-name">${esc(ex.name)}</div>
+          ${ex.category === 'gym' ? `<div class="workout-weight">${pe.weight ?? 10} KG</div>` : ''}
           <div class="workout-muscles">${ex.muscles.join(' · ')}</div>
           <div class="set-counter" style="margin-top:12px">
             ${pips}
@@ -1090,8 +1100,12 @@ const App = (() => {
     if (!state.editingPlan) return;
     const pe = state.editingPlan.exercises[idx];
     if (!pe) return;
-    const min = field === 'sets' ? 1 : field === 'rest' ? 15 : 1;
-    pe[field] = Math.max(min, pe[field] + delta);
+    if (field === 'weight') {
+      pe.weight = Math.min(200, Math.max(0, (pe.weight ?? 10) + delta));
+    } else {
+      const min = field === 'sets' ? 1 : field === 'rest' ? 15 : 1;
+      pe[field] = Math.max(min, pe[field] + delta);
+    }
     const el = document.getElementById(`ex-${field}-${idx}`);
     if (el) { el.textContent = pe[field]; el.classList.add('pop'); setTimeout(() => el.classList.remove('pop'), 300); }
   }
@@ -1128,7 +1142,8 @@ const App = (() => {
         exerciseId: exId,
         sets: ex.defaultSets,
         reps: ex.defaultReps,
-        rest: ex.defaultRest
+        rest: ex.defaultRest,
+        ...(ex.category === 'gym' ? { weight: 10 } : {}),
       });
     }
     navigate('exercise-selector');
